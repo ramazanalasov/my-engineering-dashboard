@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мой калькулятор</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #151515;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+}
+
+.calculator {
+    background: #242424;
+    padding: 25px;
+    border-radius: 25px;
+    width: 320px;
+    box-shadow: 0 10px 40px #000;
+}
+
+#display {
+    width: 100%;
+    height: 75px;
+    background: #333;
+    border: none;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    color: white;
+    font-size: 30px;
+    text-align: right;
+    padding: 15px;
+}
+
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+button {
+    height: 60px;
+    border: none;
+    border-radius: 12px;
+    font-size: 22px;
+    color: white;
+    background: #444;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:hover {
+    background: #666;
+}
+
+.operator {
+    background: #ff9500;
+}
+
+.operator:hover {
+    background: #ffaa33;
+}
+
+.clear {
+    background: #e74c3c;
+}
+
+.equal {
+    background: #27ae60;
+}
+
+.zero {
+    grid-column: span 2;
+}
+</style>
+</head>
+
+<body>
+
+<div class="calculator">
+
+    <input type="text" id="display" value="0" readonly>
+
+    <div class="buttons">
+        <button class="clear" onclick="clearDisplay()">C</button>
+        <button onclick="deleteLast()">⌫</button>
+        <button onclick="addValue('%')">%</button>
+        <button class="operator" onclick="addValue('/')">÷</button>
+
+        <button onclick="addValue('7')">7</button>
+        <button onclick="addValue('8')">8</button>
+        <button onclick="addValue('9')">9</button>
+        <button class="operator" onclick="addValue('*')">×</button>
+
+        <button onclick="addValue('4')">4</button>
+        <button onclick="addValue('5')">5</button>
+        <button onclick="addValue('6')">6</button>
+        <button class="operator" onclick="addValue('-')">−</button>
+
+        <button onclick="addValue('1')">1</button>
+        <button onclick="addValue('2')">2</button>
+        <button onclick="addValue('3')">3</button>
+        <button class="operator" onclick="addValue('+')">+</button>
+
+        <button class="zero" onclick="addValue('0')">0</button>
+        <button onclick="addValue('.')">.</button>
+        <button class="equal" onclick="calculate()">=</button>
+    </div>
+
+</div>
+
+<script>
+const display = document.getElementById("display");
+let expression = "";
+
+function addValue(value) {
+    expression += value;
+    display.value = expression;
+}
+
+function clearDisplay() {
+    expression = "";
+    display.value = "0";
+}
+
+function deleteLast() {
+    expression = expression.slice(0, -1);
+    display.value = expression || "0";
+}
+
+function calculate() {
+    try {
+        if (!/^[0-9+\-*/%.()\s]+$/.test(expression)) {
+            throw new Error("Ошибка");
+        }
+
+        const result = Function(
+            '"use strict"; return (' + expression + ')'
+        )();
+
+        if (!Number.isFinite(result)) {
+            throw new Error("Ошибка");
+        }
+
+        expression = String(Number(result.toFixed(10)));
+        display.value = expression;
+
+    } catch {
+        display.value = "Ошибка";
+        expression = "";
+    }
+}
+</script>
+
+</body>
+</html>
