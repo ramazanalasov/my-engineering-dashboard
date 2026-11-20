@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Инженерный дашборд · ООО «Дорожно-Строительное Управление №1» · Сводный отчёт</title>
+<style>
+    :root {
+        --bg: #eef2f7;
+        --bg-gradient:
+            radial-gradient(1200px 600px at 10% -10%, #dbeafe 0%, transparent 60%),
+            radial-gradient(1000px 500px at 110% 10%, #e0e7ff 0%, transparent 55%);
+        --surface: #ffffff;
+        --surface-2: #f8fafc;
+        --surface-3: #f1f5f9;
+        --border: #e2e8f0;
+        --border-strong: #cbd5e1;
+        --text: #0f172a;
+        --text-muted: #64748b;
+        --text-dim: #94a3b8;
+        --primary: #2563eb;
+        --primary-hover: #1d4ed8;
+        --primary-soft: #eff6ff;
+        --primary-border: #bfdbfe;
+        --accent: #7c3aed;
+        --success: #059669;
+        --success-soft: #ecfdf5;
+        --danger: #dc2626;
+        --danger-soft: #fef2f2;
+        --warning: #d97706;
+        --warning-soft: #fffbeb;
+        --shadow-sm: 0 1px 2px rgba(15, 23, 42, .06);
+        --shadow: 0 1px 3px rgba(15, 23, 42, .08), 0 1px 2px rgba(15, 23, 42, .04);
+        --shadow-lg: 0 10px 30px rgba(15, 23, 42, .10);
+        --radius: 14px;
+        --radius-sm: 9px;
+        --ease: cubic-bezier(.22, .61, .36, 1);
+    }
+    html[data-theme="dark"] {
+        --bg: #0a0f1a;
+        --bg-gradient:
+            radial-gradient(1200px 600px at 10% -10%, #1e293b 0%, transparent 55%),
+            radial-gradient(1000px 500px at 110% 10%, #172554 0%, transparent 50%);
+        --surface: #101828;
+        --surface-2: #151f33;
+        --surface-3: #1a2740;
+        --border: #1f2d47;
+        --border-strong: #2c3f60;
+        --text: #e8eef9;
+        --text-muted: #93a4bd;
+        --text-dim: #5b6b85;
+        --primary: #3b82f6;
+        --primary-hover: #60a5fa;
+        --primary-soft: #10203c;
+        --primary-border: #1e3a8a;
+        --accent: #a78bfa;
+        --success: #10b981;
+        --success-soft: #062b22;
+        --danger: #f87171;
+        --danger-soft: #2a1215;
+        --warning: #fbbf24;
+        --warning-soft: #2a1f0a;
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
+        --shadow: 0 1px 3px rgba(0, 0, 0, .5), 0 1px 2px rgba(0, 0, 0, .3);
+        --shadow-lg: 0 10px 30px rgba(0, 0, 0, .55);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                     "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+        background: var(--bg);
+        background-image: var(--bg-gradient);
+        background-attachment: fixed;
+        color: var(--text);
+        line-height: 1.5;
+        min-height: 100vh;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        transition: background-color .35s var(--ease), color .35s var(--ease);
+    }
+    .topbar {
+        position: sticky; top: 0; z-index: 50;
+        backdrop-filter: saturate(180%) blur(14px);
+        -webkit-backdrop-filter: saturate(180%) blur(14px);
+        background: color-mix(in srgb, var(--surface) 78%, transparent);
+        border-bottom: 1px solid var(--border);
+        transition: background .35s var(--ease), border-color .35s var(--ease);
+    }
+    .topbar__inner {
+        max-width: 1280px; margin: 0 auto; padding: 14px 22px;
+        display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand__logo {
+        width: 40px; height: 40px; border-radius: 11px;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+        display: grid; place-items: center; color: #fff; flex-shrink: 0;
+        box-shadow: 0 4px 14px rgba(37, 99, 235, .35);
+    }
+    .brand__logo svg { width: 22px; height: 22px; }
+    .brand__text { min-width: 0; }
+    .brand__title { font-size: 1.02rem; font-weight: 700; letter-spacing: -0.015em;
+        white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .brand__subtitle { font-size: .74rem; color: var(--text-muted);
+        letter-spacing: .02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .theme-toggle {
+        position: relative; width: 62px; height: 32px; border-radius: 999px;
+        border: 1px solid var(--border-strong); background: var(--surface-3);
+        cursor: pointer; flex-shrink: 0; padding: 0; outline: none;
+        transition: background .3s var(--ease), border-color .3s var(--ease);
+    }
+    .theme-toggle:focus-visible { box-shadow: 0 0 0 3px var(--primary-soft), 0 0 0 4px var(--primary); }
+    .theme-toggle__thumb {
+        position: absolute; top: 2px; left: 2px; width: 26px; height: 26px;
+        border-radius: 50%; background: var(--surface); box-shadow: var(--shadow);
+        display: grid; place-items: center; color: var(--warning);
+        transition: transform .35s var(--ease), background .3s var(--ease);
+    }
+    html[data-theme="dark"] .theme-toggle__thumb { transform: translateX(30px); color: #93c5fd; }
+    .theme-toggle__thumb svg { width: 15px; height: 15px; }
+    .theme-toggle__icon-sun, .theme-toggle__icon-moon {
+        transition: opacity .25s var(--ease), transform .35s var(--ease);
+    }
+    html[data-theme="dark"] .theme-toggle__icon-sun {
+        opacity: 0; transform: rotate(-90deg) scale(.5); position: absolute;
+    }
+    html:not([data-theme="dark"]) .theme-toggle__icon-moon {
+        opacity: 0; transform: rotate(90deg) scale(.5); position: absolute;
+    }
+    .tabs-wrapper { max-width: 1280px; margin: 0 auto; padding: 22px 22px 0; }
+    .tabs {
+        display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 6px;
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: var(--radius); box-shadow: var(--shadow-sm);
+        transition: background .35s var(--ease), border-color .35s var(--ease);
+    }
+    @media (max-width: 900px) { .tabs { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .tabs { grid-template-columns: 1fr; } }
+    .tab {
+        position: relative; display: flex; align-items: center; gap: 12px;
+        padding: 13px 16px; border: none; background: transparent;
+        border-radius: var(--radius-sm); cursor: pointer; font-family: inherit;
+        font-size: .9rem; font-weight: 600; color: var(--text-muted);
+        text-align: left; outline: none;
+        transition: background .25s var(--ease), color .25s var(--ease);
+    }
+    .tab:hover { background: var(--surface-3); color: var(--text); }
+    .tab:focus-visible { box-shadow: 0 0 0 2px var(--primary); }
+    .tab.is-active {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+        color: #fff; box-shadow: 0 4px 14px rgba(37, 99, 235, .35);
+    }
+    .tab__icon {
+        width: 34px; height: 34px; flex-shrink: 0; border-radius: 9px;
+        display: grid; place-items: center; background: var(--surface-3);
+        color: var(--primary);
+        transition: background .25s var(--ease), color .25s var(--ease);
+    }
+    .tab.is-active .tab__icon { background: rgba(255, 255, 255, .18); color: #fff; }
+    .tab__icon svg { width: 18px; height: 18px; }
+    .tab__label { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+    .tab__num { font-size: .68rem; font-weight: 700; letter-spacing: .06em;
+        text-transform: uppercase; opacity: .65; }
+    .tab__name { font-size: .85rem; font-weight: 600; white-space: nowrap;
+        overflow: hidden; text-overflow: ellipsis; }
+    .main { max-width: 1280px; margin: 0 auto; padding: 22px; }
+    .panel { display: none; animation: fadeIn .35s var(--ease); }
+    .panel.is-active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .panel-grid {
+        display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+        gap: 22px; align-items: start;
+    }
+    @media (max-width: 1000px) { .panel-grid { grid-template-columns: 1fr; } }
+    .card {
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px;
+        transition: background .35s var(--ease), border-color .35s var(--ease);
+    }
+    .card + .card { margin-top: 18px; }
+    .card__title {
+        display: flex; align-items: center; gap: 10px; font-size: 1rem;
+        font-weight: 700; letter-spacing: -0.01em; padding-bottom: 16px;
+        margin-bottom: 20px; border-bottom: 1px solid var(--border);
+    }
+    .card__title-icon {
+        width: 30px; height: 30px; border-radius: 8px; background: var(--primary-soft);
+        color: var(--primary); display: grid; place-items: center; flex-shrink: 0;
+    }
+    .card__title-icon svg { width: 16px; height: 16px; }
+    .card__title-text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+    .card__title-main { font-size: .95rem; font-weight: 700; }
+    .card__title-sub { font-size: .74rem; font-weight: 500; color: var(--text-muted); }
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    @media (max-width: 520px) { .form-grid { grid-template-columns: 1fr; } }
+    .field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+    .field--common {
+        position: relative; padding: 12px; margin: -12px;
+        background: linear-gradient(135deg,
+            color-mix(in srgb, var(--warning) 10%, transparent) 0%,
+            color-mix(in srgb, var(--warning) 4%, transparent) 100%);
+        border: 1px dashed color-mix(in srgb, var(--warning) 45%, transparent);
+        border-radius: var(--radius-sm);
+    }
+    .field__label {
+        font-size: .78rem; font-weight: 600; color: var(--text-muted);
+        letter-spacing: .01em; display: flex; align-items: center;
+        justify-content: space-between; gap: 6px; flex-wrap: wrap;
+    }
+    .field__formula {
+        font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+        font-size: .68rem; color: var(--text-dim); font-weight: 500;
+        background: var(--surface-3); padding: 1px 6px; border-radius: 5px;
+    }
+    .field__badge {
+        font-size: .62rem; font-weight: 700; letter-spacing: .06em;
+        text-transform: uppercase; color: var(--warning);
+        background: var(--warning-soft); padding: 2px 7px; border-radius: 5px;
+        border: 1px solid color-mix(in srgb, var(--warning) 30%, transparent);
+        white-space: nowrap;
+    }
+    .field__wrap { position: relative; display: flex; align-items: center; }
+    .field__input {
+        width: 100%; padding: 12px 54px 12px 14px; font-family: inherit;
+        font-size: 1rem; font-weight: 500; color: var(--text);
+        background: var(--surface-2); border: 1.5px solid var(--border);
+        border-radius: var(--radius-sm); outline: none;
+        font-variant-numeric: tabular-nums;
+        transition: border-color .18s var(--ease), box-shadow .18s var(--ease),
+                    background .18s var(--ease);
+        -moz-appearance: textfield;
+    }
+    .field__input::-webkit-outer-spin-button,
+    .field__input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .field__input:hover { border-color: var(--border-strong); }
+    .field__input:focus {
+        border-color: var(--primary); background: var(--surface);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent);
+    }
+    .field__input.is-invalid { border-color: var(--danger); background: var(--danger-soft); }
+    .field__input.is-invalid:focus {
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--danger) 20%, transparent);
+    }
+    .field__input.is-common { border-color: color-mix(in srgb, var(--warning) 55%, var(--border)); }
+    .field__unit {
+        position: absolute; right: 14px; font-size: .78rem; font-weight: 600;
+        color: var(--text-dim); pointer-events: none;
+    }
+    .field__hint {
+        font-size: .72rem; color: var(--text-dim); min-height: 15px;
+        line-height: 1.35; transition: color .18s var(--ease);
+    }
+    .field__hint.is-error { color: var(--danger); font-weight: 600; }
+    .results-stack { display: flex; flex-direction: column; gap: 14px; }
+    .result-card {
+        position: relative; overflow: hidden; border-radius: var(--radius);
+        padding: 20px 22px; background: var(--surface-2);
+        border: 1px solid var(--border); box-shadow: var(--shadow-sm);
+        transition: transform .25s var(--ease), box-shadow .25s var(--ease),
+                    background .35s var(--ease), border-color .35s var(--ease);
+    }
+    .result-card::before {
+        content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
+        background: var(--text-dim); opacity: .5;
+        transition: background .3s var(--ease), opacity .3s var(--ease);
+    }
+    .result-card--primary {
+        background: linear-gradient(135deg,
+            color-mix(in srgb, var(--primary) 10%, var(--surface)) 0%,
+            color-mix(in srgb, var(--primary) 4%, var(--surface)) 100%);
+        border-color: var(--primary-border);
+        box-shadow: 0 6px 22px color-mix(in srgb, var(--primary) 14%, transparent);
+    }
+    .result-card--primary::before {
+        background: linear-gradient(180deg, var(--primary), var(--accent)); opacity: 1;
+    }
+    .result-card--accent::before {
+        background: linear-gradient(180deg, var(--success), #059669); opacity: 1;
+    }
+    .result-card__label {
+        display: flex; align-items: center; gap: 7px; font-size: .72rem;
+        font-weight: 700; text-transform: uppercase; letter-spacing: .07em;
+        color: var(--text-muted); margin-bottom: 8px;
+    }
+    .result-card__label svg { width: 13px; height: 13px; color: var(--text-dim); }
+    .result-card--primary .result-card__label svg { color: var(--primary); }
+    .result-card__value {
+        font-size: clamp(1.85rem, 4vw, 2.4rem); font-weight: 800;
+        letter-spacing: -0.03em; line-height: 1.05;
+        font-variant-numeric: tabular-nums; word-break: break-word; color: var(--text);
+    }
+    .result-card--primary .result-card__value { color: var(--primary); }
+    .result-card__unit {
+        font-size: .95rem; font-weight: 600; color: var(--text-muted);
+        margin-left: 6px; letter-spacing: 0;
+    }
+    .result-card__sub {
+        font-size: .78rem; color: var(--text-muted); margin-top: 6px; line-height: 1.45;
+    }
+    .formula-block {
+        margin-top: 18px; padding: 16px 18px; background: var(--surface-3);
+        border-left: 3px solid var(--primary); border-radius: var(--radius-sm);
+        font-size: .82rem; color: var(--text-muted); line-height: 1.75;
+        transition: background .35s var(--ease), border-color .35s var(--ease);
+    }
+    .formula-block__title {
+        font-size: .74rem; font-weight: 700; text-transform: uppercase;
+        letter-spacing: .07em; color: var(--text); margin-bottom: 8px;
+        display: flex; align-items: center; gap: 6px;
+    }
+    .formula-block__title svg { width: 13px; height: 13px; color: var(--primary); }
+    .formula-block code {
+        font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+        background: var(--surface); padding: 2px 7px; border-radius: 5px;
+        font-size: .79rem; color: var(--text); border: 1px solid var(--border); font-weight: 600;
+    }
+    .formula-block em { font-style: normal; color: var(--primary); font-weight: 700; }
+    .formula-block p + p { margin-top: 6px; }
+    .transfer-block {
+        margin-top: 18px; padding: 18px; border-radius: var(--radius);
+        background: linear-gradient(135deg,
+            color-mix(in srgb, var(--warning) 12%, var(--surface)) 0%,
+            color-mix(in srgb, var(--warning) 4%, var(--surface)) 100%);
+        border: 1px solid color-mix(in srgb, var(--warning) 35%, transparent);
+        display: flex; flex-direction: column; gap: 12px;
+    }
+    .transfer-block__header {
+        display: flex; align-items: center; gap: 10px; font-size: .85rem;
+        font-weight: 700; color: var(--text);
+    }
+    .transfer-block__header-icon {
+        width: 26px; height: 26px; border-radius: 7px; background: var(--warning-soft);
+        color: var(--warning); display: grid; place-items: center; flex-shrink: 0;
+    }
+    .transfer-block__header-icon svg { width: 14px; height: 14px; }
+    .transfer-block__desc { font-size: .78rem; color: var(--text-muted); line-height: 1.5; }
+    .transfer-block__desc strong { color: var(--text); }
+    .actions {
+        display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end;
+        margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);
+    }
+    .actions--transfer {
+        border-top: none; padding-top: 0; margin-top: 0; justify-content: flex-start;
+    }
+    .btn {
+        font-family: inherit; font-size: .86rem; font-weight: 600;
+        padding: 11px 20px; border-radius: var(--radius-sm);
+        border: 1.5px solid transparent; cursor: pointer;
+        display: inline-flex; align-items: center; justify-content: center;
+        gap: 7px; white-space: nowrap; line-height: 1; outline: none;
+        transition: background .18s var(--ease), border-color .18s var(--ease),
+                    color .18s var(--ease), transform .1s var(--ease),
+                    box-shadow .18s var(--ease);
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn:focus-visible { box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 25%, transparent); }
+    .btn svg { width: 15px; height: 15px; flex-shrink: 0; }
+    .btn--primary {
+        background: var(--primary); color: #fff;
+        box-shadow: 0 3px 10px color-mix(in srgb, var(--primary) 35%, transparent);
+    }
+    .btn--primary:hover {
+        background: var(--primary-hover);
+        box-shadow: 0 5px 16px color-mix(in srgb, var(--primary) 40%, transparent);
+    }
+    .btn--secondary {
+        background: var(--surface); color: var(--text); border-color: var(--border-strong);
+    }
+    .btn--secondary:hover {
+        background: var(--surface-3); border-color: var(--primary); color: var(--primary);
+    }
+    .btn--ghost { background: transparent; color: var(--text-muted); border-color: var(--border); }
+    .btn--ghost:hover { background: var(--surface-3); color: var(--text); }
+    .btn--warning {
+        background: var(--warning); color: #fff;
+        box-shadow: 0 3px 10px color-mix(in srgb, var(--warning) 35%, transparent);
+    }
+    .btn--warning:hover {
+        background: color-mix(in srgb, var(--warning) 88%, #000);
+        box-shadow: 0 5px 16px color-mix(in srgb, var(--warning) 45%, transparent);
+    }
+    .btn--success {
+        background: var(--success); color: #fff;
+        box-shadow: 0 3px 10px color-mix(in srgb, var(--success) 35%, transparent);
+    }
+    .btn--success:hover {
+        background: color-mix(in srgb, var(--success) 88%, #000);
+        box-shadow: 0 5px 16px color-mix(in srgb, var(--success) 45%, transparent);
+    }
+    .btn--word {
+        background: #2b579a; color: #fff;
+        box-shadow: 0 3px 10px rgba(43, 87, 154, .35);
+    }
+    .btn--word:hover { background: #1f4374; box-shadow: 0 5px 16px rgba(43, 87, 154, .45); }
+    @media (max-width: 520px) {
+        .actions { flex-direction: column-reverse; align-items: stretch; }
+        .btn { width: 100%; }
+    }
+    .report-actions {
+        display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 22px;
+        padding-bottom: 22px; border-bottom: 1px solid var(--border);
+    }
+    .report-document {
+        background: #ffffff; color: #000000; padding: 32px 36px;
+        border: 1px solid #000000;
+        font-family: 'Times New Roman', 'Liberation Serif', Times, serif;
+        font-size: 12pt; line-height: 1.45; box-shadow: var(--shadow-sm);
+    }
+    html[data-theme="dark"] .report-document { background: #f6f7f9; color: #000; }
+    .report-doc__header {
+        text-align: center; border-bottom: 2px solid #000; padding-bottom: 14px;
+        margin-bottom: 20px; font-size: 11pt; line-height: 1.55;
+    }
+    .report-doc__header > div { margin: 2px 0; }
+    .report-doc__org {
+        font-weight: 700; font-size: 12pt; text-transform: uppercase;
+        letter-spacing: .04em; margin-bottom: 4px !important;
+    }
+    .report-doc__title {
+        text-align: center; font-size: 13pt; font-weight: 700;
+        text-transform: uppercase; letter-spacing: .04em;
+        margin: 18px 0 6px; line-height: 1.35;
+    }
+    .report-doc__date {
+        text-align: right; font-size: 10pt; color: #333;
+        font-style: italic; margin-bottom: 16px;
+    }
+    .report-doc__table {
+        width: 100%; border-collapse: collapse; margin: 10px 0 22px; font-size: 10.5pt;
+    }
+    .report-doc__table th,
+    .report-doc__table td {
+        border: 1px solid #000; padding: 5px 8px; text-align: left; vertical-align: top;
+    }
+    .report-doc__table th {
+        background: #e8e8e8; font-weight: 700; font-size: 10pt;
+        text-transform: uppercase; letter-spacing: .02em;
+    }
+    .report-doc__table td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .report-doc__table tr.section-row td {
+        background: #f0f0f0; font-weight: 700; text-transform: uppercase;
+        font-size: 10pt; letter-spacing: .03em;
+    }
+    .report-doc__conclusion { border: 1px solid #000; padding: 14px 18px; margin: 22px 0; }
+    .report-doc__conclusion h2 {
+        font-size: 11pt; font-weight: 700; text-transform: uppercase;
+        margin-bottom: 10px; letter-spacing: .03em;
+    }
+    .report-doc__conclusion p { font-size: 11pt; line-height: 1.6; text-align: justify; }
+    .report-doc__signature { margin-top: 36px; font-size: 11pt; line-height: 2; }
+    .report-doc__signature-line {
+        display: inline-block; border-bottom: 1px solid #000; min-width: 130px;
+        height: 1em; margin: 0 8px; vertical-align: bottom;
+    }
+    .report-doc__mp { margin-top: 6px; font-size: 10pt; color: #333; }
+    .report-doc__empty {
+        text-align: center; padding: 48px 20px; color: #555;
+        font-size: 11pt; font-style: italic;
+    }
+    .toast-container {
+        position: fixed; top: 80px; right: 20px; z-index: 9999;
+        display: flex; flex-direction: column; gap: 10px;
+        pointer-events: none; max-width: calc(100vw - 40px);
+    }
+    .toast {
+        padding: 12px 16px; background: var(--surface); color: var(--text);
+        border: 1px solid var(--border); border-left: 3px solid var(--primary);
+        border-radius: var(--radius-sm); box-shadow: var(--shadow-lg);
+        font-size: .84rem; font-weight: 500; line-height: 1.45;
+        animation: toastIn .35s var(--ease); pointer-events: auto;
+        display: flex; align-items: flex-start; gap: 10px; max-width: 360px;
+    }
+    .toast svg { width: 16px; height: 16px; flex-shrink: 0; margin-top: 1px; }
+    .toast--success { border-left-color: var(--success); }
+    .toast--success svg { color: var(--success); }
+    .toast--error { border-left-color: var(--danger); }
+    .toast--error svg { color: var(--danger); }
+    .toast--info { border-left-color: var(--primary); }
+    .toast--info svg { color: var(--primary); }
+    @keyframes toastIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes toastOut { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(30px); } }
+    .toast.is-leaving { animation: toastOut .3s var(--ease) forwards; }
+    .footer {
+        max-width: 1280px; margin: 0 auto; padding: 28px 22px 40px;
+        text-align: center; font-size: .76rem; color: var(--text-dim); line-height: 1.6;
+    }
+    .footer strong { color: var(--text-muted); font-weight: 600; }
+    @media print {
+        .topbar, .tabs-wrapper, .actions, .transfer-block, .report-actions,
+        .footer, .toast-container, .theme-toggle { display: none !important; }
+        body {
+            background: #fff !important; background-image: none !important;
+            padding: 0 !important; color: #000 !important;
+        }
+        .main { padding: 0 !important; max-width: 100% !important; }
+        .panel { display: none !important; }
+        .panel.is-active { display: block !important; }
+        .panel-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+        .card {
+            box-shadow: none !important; border: 1px solid #999 !important;
+            page-break-inside: avoid; margin-bottom: 12px !important; background: #fff !important;
+        }
+        .card + .card { margin-top: 12px !important; }
+        .result-card {
+            box-shadow: none !important; border: 1px solid #999 !important; background: #fff !important;
+        }
+        .result-card--primary { background: #f5f5f5 !important; border-color: #666 !important; }
+        .result-card--primary .result-card__value,
+        .result-card__value { color: #000 !important; }
+        .formula-block {
+            background: #f9f9f9 !important; border-left: 3px solid #000 !important;
+            page-break-inside: avoid;
+        }
+        .report-document {
+            border: none !important; padding: 0 !important; box-shadow: none !important;
+            background: #fff !important; color: #000 !important;
+        }
+        table { border-collapse: collapse !important; }
+        .report-doc__table td, .report-doc__table th {
+            border: 1px solid #000 !important; padding: 5px !important;
+            background: #fff !important; color: #000 !important;
+        }
+        .report-doc__table th { background: #e8e8e8 !important; }
+        .report-doc__table tr.section-row td { background: #f0f0f0 !important; }
+        .report-doc__conclusion { border: 1px solid #000 !important; }
+        .report-doc__empty { display: none !important; }
+    }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+    <div class="topbar__inner">
+        <div class="brand">
+            <div class="brand__logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 20h20"/>
+                    <path d="M6 20V8l6-4 6 4v12"/>
+                    <path d="M9 20v-5h6v5"/>
+                </svg>
+            </div>
+            <div class="brand__text">
+                <div class="brand__title">Инженерный дашборд · ДСУ №1</div>
+                <div class="brand__subtitle">Объект: подстанции · Связанные модули</div>
+            </div>
+        </div>
+
+        <button type="button" class="theme-toggle" id="themeToggle"
+                aria-label="Переключить тему" title="Переключить тему">
+            <span class="theme-toggle__thumb">
+                <svg class="theme-toggle__icon-sun" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="4"/>
+                    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+                </svg>
+                <svg class="theme-toggle__icon-moon" viewBox="0 0 24 24" fill="none"
+                     stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+            </span>
+        </button>
+    </div>
+</header>
+
+<div class="tabs-wrapper">
+    <nav class="tabs" role="tablist" aria-label="Модули дашборда">
+        <button type="button" class="tab is-active" role="tab"
+                aria-selected="true" aria-controls="panel-1" id="tab-1" data-tab="1">
+            <span class="tab__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 12h18"/><path d="M3 6h18"/><path d="M3 18h18"/>
+                    <circle cx="8" cy="6" r="1.5" fill="currentColor"/>
+                    <circle cx="16" cy="12" r="1.5" fill="currentColor"/>
+                    <circle cx="11" cy="18" r="1.5" fill="currentColor"/>
+                </svg>
+            </span>
+            <span class="tab__label">
+                <span class="tab__num">Модуль 1</span>
+                <span class="tab__name">Доставка асфальтобетона</span>
+            </span>
+        </button>
+
+        <button type="button" class="tab" role="tab"
+                aria-selected="false" aria-controls="panel-2" id="tab-2" data-tab="2">
+            <span class="tab__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M2 20h20"/><path d="M4 20V10l8-6 8 6v10"/><path d="M9 20v-6h6v6"/>
+                </svg>
+            </span>
+            <span class="tab__label">
+                <span class="tab__num">Модуль 2</span>
+                <span class="tab__name">Объём земляных работ</span>
+            </span>
+        </button>
+
+        <button type="button" class="tab" role="tab"
+                aria-selected="false" aria-controls="panel-3" id="tab-3" data-tab="3">
+            <span class="tab__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="1" y="6" width="15" height="12" rx="2"/>
+                    <path d="M16 10h4l3 3v5h-7"/>
+                    <circle cx="5.5" cy="18.5" r="2"/>
+                    <circle cx="18.5" cy="18.5" r="2"/>
+                </svg>
+            </span>
+            <span class="tab__label">
+                <span class="tab__num">Модуль 3</span>
+                <span class="tab__name">Логистика рейса</span>
+            </span>
+        </button>
+
+        <button type="button" class="tab" role="tab"
+                aria-selected="false" aria-controls="panel-4" id="tab-4" data-tab="4">
+            <span class="tab__icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                </svg>
+            </span>
+            <span class="tab__label">
+                <span class="tab__num">Вкладка 4</span>
+                <span class="tab__name">Сводный отчёт</span>
+            </span>
+        </button>
+    </nav>
+</div>
+
+<main class="main">
+
+    <section class="panel is-active" id="panel-1" role="tabpanel" aria-labelledby="tab-1">
+        <div class="panel-grid">
+            <div>
+                <div class="card">
+                    <div class="card__title">
+                        <span class="card__title-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                 stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 20h9"/>
+                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                            </svg>
+                        </span>
+                        <span class="card__title-text">
+                            <span class="card__title-main">Исходные параметры</span>
+                            <span class="card__title-sub">Асфальтобетонное покрытие</span>
+                        </span>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="field field--common">
+                            <label class="field__label" for="commonParam-1">
+                                Длина участка
+                                <span class="field__badge">Общий параметр</span>
+                            </label>
+                            <div class="field__wrap">
+                                <input type="number" id="commonParam-1"
+                                       class="field__input common-param"
+                                       min="0" step="any" placeholder="0" inputmode="decimal"
+                                       data-module="1" data-key="L" data-common="true">
+                                <span class="field__unit">м</span>
+                            </div>
+                            <div class="field__hint" id="m1-L-hint">Используется во всех трёх модулях</div>
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="m1-B">
+                                Ширина покрытия <span class="field__formula">B</span>
+                            </label>
+                            <div class="field__wrap">
+                                <input type="number" id="m1-B" class="field__input"
+                                       min="0" step="any" placeholder="0" inputmode="decimal"
+                                       data-module="1" data-key="B">
+                                <span class="field__unit">м</span>
+                            </div>
+                            <div class="field__hint" id="m1-B-hint"></div>
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="m1-h">
+                                Толщина слоя <span class="field__formula">h</span>
+                            </label>
+                            <div class="field__wrap">
+                                <input type="number" id="m1-h" class="field__input"
+                                       min="0" step="any" placeholder="0" inputmode="decimal"
+                                       data-module="1" data-key="h">
+                                <span class="field__unit">см</span>
+                            </div>
+                            <div class="field__hint" id="m1-h-hint"></div>
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="m1-rho">
+                                Плотность смеси <span class="field__formula">ρ</span>
+                            </label>
+                            <div class="field__wrap">
+                                <input type="number" id="m1-rho" class="field__input"
+                                       min="0" step="0.01" placeholder="2.4" inputmode="decimal"
+                                       data-module="1" data-key="rho" value="2.4">
+                                <span class="field__unit">т/м³</span>
+                            </div>
+                            <div class="field__hint" id="m1-rho-hint">Средняя: 2,3–2,5 т/м³</div>
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="m1-G">
+                                Грузоподъёмность <span class="field__formula">G</span>
+                            </label>
+                            <div class="field__wrap">
+                                <input type="number" id="m1-G" class="field__input"
+                                       min="0" step="any" placeholder="20" inputmode="decimal"
+                                       data-module="1" data-key="G" value="20">
+                                <span class="field__unit">т</span>
+                            </div>
+                            <div class="field__hint" id="m1-G-hint">Типовая: 15–30 т</div>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button type="button" class="btn btn--ghost" data-action="print" data-module="1">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 6 2 18 2 18 9"/>
+                                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                                <rect x="6" y="14" width="12" height="8"/>
+                            </svg>
+                            Печать
+                        </button>
+                        <button type="button" class="btn btn--secondary" data-action="reset" data-module="1">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="1 4 1 10 7 10"/>
+                                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                            </svg>
+                            Сброс
+                        </button>
+                        <button type="button" class="btn btn--primary" data-action="calc" data-module="1">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="4" y="2" width="16" height="20" rx="2"/>
+                                <line x1="8" y1="6" x2="16" y2="6"/>
+                                <line x1="8" y1="18" x2="16" y2="18"/>
+                            </svg>
+                            Рассчитать
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <div class="card__title">
+                        <span class="card__title-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.8L7 14"/>
+                            </svg>
+                        </span>
+                        <span class="card__title-text">
+                            <span class="card__title-main">Результат расчёта</span>
+                            <span class="card__title-sub">Масса смеси и количество рейсов</span>
+                        </span>
+                    </div>
+
+                    <div class="results-stack">
+                        <div class="result-card result-card--primary">
+                            <div class="result-card__label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                    <path d="M12 2v20"/><path d="M5 7l7-5 7 5"/><path d="M5 17l7 5 7-5"/>
+                                </svg>
+                                Площадь покрытия
+                            </div>
+                            <div class="result-card__value" id="m1-out-area">
+                                —<span class="result-card__unit">м²</span>
+                            </div>
+                            <div class="result-card__sub" id="m1-out-area-sub">S = L × B</div>
+                        </div>
+
+                        <div class="result-card result-card--primary">
+                            <div class="result-card__label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                                </svg>
+                                Масса смеси
+                            </div>
+                            <div class="result-card__value" id="m1-out-mass">
+                                —<span class="result-card__unit">т</span>
+                            </div>
+                            <div class="result-card__sub" id="m1-out-mass-sub">M = S × (h/100) × ρ</div>
+                        </div>
+
+                        <div class="result-card result-card--accent">
+                            <div class="result-card__label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                    <rect x="1" y="6" width="15" height="12" rx="2"/>
+                                    <path d="M16 10h4l3 3v5h-7"/>
+                                    <circle cx="5.5" cy="18.5" r="2"/>
+                                    <circle cx="18.5" cy="18.5" r="2"/>
+                                </svg>
+                                Количество рейсов
+                            </div>
+                            <div class="result-card__value" id="m1-out-trips">
+                                —<span class="result-card__unit">шт</span>
+                            </div>
+                            <div class="result-card__sub" id="m1-out-trips-sub">N = ⌈M / G⌉</div>
+                        </div>
+                    </div>
+
+                    <div class="formula-block">
+                        <div class="formula-block__title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                            </svg>
+                            Формулы расчёта
+                        </div>
+                        <p>Площадь: <code>S = L × B</code></p>
+                        <p>Масса: <code>M = S × (h / 100) × ρ</code></p>
+                        <p>Рейсы: <code>N = ⌈M / G⌉</code> (округление вверх)</p>
+                    </div>
+                </div>
+
+                <div class="transfer-block">
+                    <div class="transfer-block__header">
+                        <span class="transfer-block__header-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                                <polyline points="12 5 19 12 12 19"/>
+                            </svg>
+                        </span>
+                        Передача общего параметра
+                    </div>
+                    <div class="transfer-block__desc">
+                        Значение <strong>L — длина участка</strong> будет подставлено
+                        в поле общего параметра Модулей 2 и 3.
+                    </div>
+                    <div class="actions actions--transfer">
+                        <button type="button" class="btn btn--warning" id="transferFromM1">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                <path d="M4 14l6-6 6 6"/>
+                                <path d="M10 8v12"/>
+                                <path d="M17 8h3v12h-3"/>
+                            </svg>
+                            Передать L в Модули 2 и 3
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel" id="panel-2" role="tabpanel" aria-labelledby="tab-2">
+        <div class="panel-grid">
+            <div>
+                <div class="card">
+                    <div class="card__title">
+                        <span class="card__title-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 20h9"/>
+                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                            </svg>
+                        </span>
+                        <span class="card__title-text">
+                            <span class="card__title-main">Исходные параметры</span>
+                            <span class="card__title-sub">Геометрия выемки / насыпи</span>
+                        </span>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="field field--common">
+                            <label class="field__label" for="commonParam-2">
+                                Длина участка
+                                <span class="field__badge">Общий параметр</span>
+                            </label>
+                            <div class="field__wrap">
+                                <input type="number" id="commonParam-2"
+                                       class="field__input common-param"
+                                       min="0" step="any" placeholder="0" inputmode="decimal"
+                                       data-module="2" data-key="L" data-common="true">
+                                <span class="field__unit">м</span>
+                            </div>
+                            <div class="field__hint" id="m2-L-hint">Можно получить из Модуля 1</div>
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="m2-B">
+                                Ширина выемки <span class="field__formula">B</span>
+                            </label>
+                            <div class="field__wrap">
+                                <input type="number" id="m2-B" class="field__input"
+                                       min="0" step="any" placeholder="0" inputmode="decimal"
+                                       data-module="2" data-key="B">
+                                <span class="field__unit">м</span>
+                            </div>
+                            <div class="field__hint" id="m2-B-hint"></div>
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="m2-H">
+                                Глубина / высота <span class="field__formula">H</span>
+                            </label>
+                            <div class="field__wrap">
+                                <input type="number" id="m2-H" class="field__input"
+                                       min="0" step="any" placeholder="0" inputmode="decimal"
+                                       data-module="2" data-key="H">
+                                <span class="field__unit">м</span>
+                            </div>
+                            <div class="field__hint" id="m2-H-hint"></div>
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="m2-rho">
+                                Плотность грунта <span class="field__formula">ρ</span>
+                            </label>
+                            <div class="field__wrap">
+                                <input type="number" id="m2-rho" class="field__input"
+                                       min="0" step="0.01" placeholder="1.8" inputmode="decimal"
+                                       data-module="2" data-key="rho" value="1.8">
+                                <span class="field__unit">т/м³</span>
+                            </div>
+                            <div class="field__hint" id="m2-rho-hint">Средняя: 1,6–2,0 т/м³</div>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button type="button" class="btn btn--ghost" data-action="print" data-module="2">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 6 2 18 2 18 9"/>
+                                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                                <rect x="6" y="14" width="12" height="8"/>
+                            </svg>
+                            Печать
+                        </button>
+                        <button type="button" class="btn btn--secondary" data-action="reset" data-module="2">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="1 4 1 10 7 10"/>
+                                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                            </svg>
+                            Сброс
+                        </button>
+                        <button type="button" class="btn btn--primary" data-action="calc" data-module="2">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="4" y="2" width="16" height="20" rx="2"/>
+                                <line x1="8" y1="6" x2="16" y2="6"/>
+                                <line x1="8" y1="18" x2="16" y2="18"/>
+                            </svg>
+                            Рассчитать
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <div class="card__title">
+                        <span class="card__title-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.8L7 14"/>
+                            </svg>
+                        </span>
+                        <span class="card__title-text">
+                            <span class="card__title-main">Результат расчёта</span>
+                            <span class="card__title-sub">Объём и масса грунта</span>
+                        </span>
+                    </div>
+
+                    <div class="results-stack">
+                        <div class="result-card result-card--primary">
+                            <div class="result-card__label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                                </svg>
+                                Объём выемки
+                            </div>
+                            <div class="result-card__value" id="m2-out-volume">
+                                —<span class="result-card__unit">м³</span>
+                            </div>
+                            <div class="result-card__sub" id="m2-out-volume-sub">V = L × B × H</div>
+                        </div>
+
+                        <div class="result-card result-card--accent">
+                            <div class="result-card__label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                    <path d="M12 2v20"/><path d="M5 7l7-5 7 5"/><path d="M5 17l7 5 7-5"/>
+                                </svg>
+                                Масса грунта
+                            </div>
+                            <div class="result-card__value" id="m2-out-mass">
+                                —<span class="result-card__unit">т</span>
+                            </div>
+                            <div class="result-card__sub" id="m2-out-mass-sub">M = V × ρ</div>
+                        </div>
+                    </div>
+
+                    <div class="formula-block">
+                        <div class="formula-block__title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                            </svg>
+                            Формулы расчёта
+                        </div>
+                        <p>Объём: <code>V = L × B × H</code></p>
+                        <p>Масса: <code>M = V × ρ</code></p>
+                    </div>
+                </div>
+
+                <div class="transfer-block">
+                    <div class="transfer-block__header">
+                        <span class="transfer-block__header-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                                <polyline points="12 5 19 12 12 19"/>
+                            </svg>
+                        </span>
+                        Передача общего параметра
+                    </div>
+                    <div class="transfer-block__desc">
+                        Если значение <strong>L</strong> в этом модуле было изменено,
+                        его можно передать в Модуль 3.
+                    </div>
+                    <div class="actions actions--transfer">
+                        <button type="button" class="btn btn--warning" id="transferFromM2">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                <path d="M4 14l6-6 6 6"/>
+                                <path d="M10 8v12"/>
+                                <path d="M17 8h3v12h-3"/>
+                            </svg>
+                            Передать L в Модуль 3
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel" id="panel-3" role="tabpanel" aria-labelledby="tab-3">
+        <div class="panel-grid">
+            <div>
+                <div class="card">
+                    <div class="card__title">
+                        <span class="card__title-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 20h9"/>
+                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                            </svg>
+                        </span>
+                        <span class="card__title-text">
+                            <span class="card__title-main">Исходные параметры</span>
+                            <span class="card__title-sub">Параметры транспортного цикла</span>
+                        </span>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="field field--common">
+                            <label class="field__label" for="commonParam-3">
+                                Расстояние рейса
+                                <span class="field__badge">Общий параметр</span>
+                            </label>
+                            <div class="field__wrap">
+                                <input type="number" id="commonParam-3"
+                                       class="field__input common-param"
+                                       min="0" step="any" placeholder="0" inputmode="decimal"
+                                       data-module="3" data-key="L" data-common="true">
+                                <span class="field__unit">м</span>
+                            </div>
+                            <div class="field__hint" id="m3-L-hint">В метрах; пересчёт в км автоматический</div>
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="m3-V">
+                                Средняя скорость <span class="field__formula">V</span>
+                            </label>
+                            <div class="field__wrap">
+                                <input type="number" id="m3-V" class="field__input"
+                                       min="0" step="any" placeholder="40" inputmode="decimal"
+                                       data-module="3" data-key="V" value="40">
+                                <span class="field__unit">км/ч</span>
+                            </div>
+                            <div class="field__hint" id="m3-V-hint">Типовая: 30–60 км/ч</div>
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="m3-tLoad">
+                                Время погрузки <span class="field__formula">t п</span>
+                            </label>
+                            <div class="field__wrap">
+                                <input type="number" id="m3-tLoad" class="field__input"
+                                       min="0" step="any" placeholder="10" inputmode="decimal"
+                                       data-module="3" data-key="tLoad" value="10">
+                                <span class="field__unit">мин</span>
+                            </div>
+                            <div class="field__hint" id="m3-tLoad-hint"></div>
+                        </div>
+
+                        <div class="field">
+                            <label class="field__label" for="m3-tUnload">
+                                Время разгрузки <span class="field__formula">t р</span>
+                            </label>
+                            <div class="field__wrap">
+                                <input type="number" id="m3-tUnload" class="field__input"
+                                       min="0" step="any" placeholder="8" inputmode="decimal"
+                                       data-module="3" data-key="tUnload" value="8">
+                                <span class="field__unit">мин</span>
+                            </div>
+                            <div class="field__hint" id="m3-tUnload-hint"></div>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button type="button" class="btn btn--ghost" data-action="print" data-module="3">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="6 9 6 2 18 2 18 9"/>
+                                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                                <rect x="6" y="14" width="12" height="8"/>
+                            </svg>
+                            Печать
+                        </button>
+                        <button type="button" class="btn btn--secondary" data-action="reset" data-module="3">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="1 4 1 10 7 10"/>
+                                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+                            </svg>
+                            Сброс
+                        </button>
+                        <button type="button" class="btn btn--primary" data-action="calc" data-module="3">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="4" y="2" width="16" height="20" rx="2"/>
+                                <line x1="8" y1="6" x2="16" y2="6"/>
+                                <line x1="8" y1="18" x2="16" y2="18"/>
+                            </svg>
+                            Рассчитать
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <div class="card__title">
+                        <span class="card__title-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.8L7 14"/>
+                            </svg>
+                        </span>
+                        <span class="card__title-text">
+                            <span class="card__title-main">Результат расчёта</span>
+                            <span class="card__title-sub">Длительность рейса</span>
+                        </span>
+                    </div>
+
+                    <div class="results-stack">
+                        <div class="result-card result-card--primary">
+                            <div class="result-card__label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12 6 12 12 16 14"/>
+                                </svg>
+                                Полное время рейса
+                            </div>
+                            <div class="result-card__value" id="m3-out-time">
+                                —<span class="result-card__unit">мин</span>
+                            </div>
+                            <div class="result-card__sub" id="m3-out-time-sub">T = (2L / V) × 60 + t п + t р</div>
+                        </div>
+
+                        <div class="result-card result-card--accent">
+                            <div class="result-card__label">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                    <path d="M12 2v20"/><path d="M5 7l7-5 7 5"/><path d="M5 17l7 5 7-5"/>
+                                </svg>
+                                Рейсов за смену (8 ч)
+                            </div>
+                            <div class="result-card__value" id="m3-out-shift">
+                                —<span class="result-card__unit">шт</span>
+                            </div>
+                            <div class="result-card__sub" id="m3-out-shift-sub">n = ⌊480 / T⌋</div>
+                        </div>
+                    </div>
+
+                    <div class="formula-block">
+                        <div class="formula-block__title">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                            </svg>
+                            Формулы расчёта
+                        </div>
+                        <p>Время рейса: <code>T = (2L / V) × 60 + t п + t р</code>,
+                            где <em>L</em> — расстояние (км),
+                            <em>V</em> — скорость (км/ч),
+                            <em>t п</em> — время погрузки (мин),
+                            <em>t р</em> — время разгрузки (мин).</p>
+                        <p>Рейсов за смену: <code>n = ⌊480 / T⌋</code></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="panel" id="panel-4" role="tabpanel" aria-labelledby="tab-4">
+        <div class="card">
+            <div class="card__title">
+                <span class="card__title-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                    </svg>
+                </span>
+                <span class="card__title-text">
+                    <span class="card__title-main">Сводный отчёт по проекту</span>
+                    <span class="card__title-sub">Технический отчёт по результатам инженерных расчётов</span>
+                </span>
+            </div>
+
+            <div class="report-actions">
+                <button type="button" class="btn btn--primary" id="generateReport">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.8L7 14"/>
+                    </svg>
+                    Сформировать отчёт
+                </button>
+                <button type="button" class="btn btn--word" id="downloadWord">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Скачать отчёт в Word
+                </button>
+                <button type="button" class="btn btn--success" id="saveProject">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                        <polyline points="17 21 17 13 7 13 7 21"/>
+                        <polyline points="7 3 7 8 15 8"/>
+                    </svg>
+                    Сохранить проект
+                </button>
+                <button type="button" class="btn btn--ghost" id="printReport">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 6 2 18 2 18 9"/>
+                        <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+                        <rect x="6" y="14" width="12" height="8"/>
+                    </svg>
+                    Печать / Сохранить в PDF
+                </button>
+            </div>
+
+            <div class="report-document" id="reportDocument">
+                <div class="report-doc__empty">
+                    Заполните данные в Модулях 1–3, чтобы сформировать технический отчёт.
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="footer">
+    <strong>ООО «Дорожно-Строительное Управление №1»</strong> · Объект: подстанции · Шифр: 7715800287<br>
+    Формулы соответствуют СП 78.13330.2012, СП 34.13330.2021, ГОСТ 9128-2013
+</footer>
+
+<div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+<script>
